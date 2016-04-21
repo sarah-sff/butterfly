@@ -1,0 +1,82 @@
+.device-item{
+clear: both;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.light-item{
+    margin-left: 15px;
+    margin-right: 15px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.light-row{
+    /*clear: both;*/
+
+    padding-bottom: 20px;
+    padding-top: 20px;
+}
+
+.light{
+    width: 58px;
+    height: 58px;
+}
+.light-on {
+    background: #cb60b3; /* Old browsers */
+    background: -moz-linear-gradient(top,  #cb60b3 0%, #ad1283 50%, #de47ac 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#cb60b3), color-stop(50%,#ad1283), color-stop(100%,#de47ac)); /   *   Chrome,Safari4+ */
+background: -webkit-linear-gradient(top,  #cb60b3 0%,#ad1283 50%,#de47ac 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top,  #cb60b3 0%,#ad1283 50%,#de47ac 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top,  #cb60b3 0%,#ad1283 50%,#de47ac 100%); /* IE10+ */
+    background: linear-gradient(to bottom,  #cb60b3 0%,#ad1283 50%,#de47ac 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#cb60b3', endColorstr='#de47ac',GradientType=0 ); /* IE6-9 */
+    -moz-border-radius: 50%;
+    -webkit-border-radius: 50%;
+    border-radius: 50%;
+    color:#fff;
+}
+.light-off {
+    background: #737275; /* Old browsers */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#cb60b3', endColorstr='#de47ac',GradientType=0 ); /* IE6-9 */
+    -moz-border-radius: 50%;
+    -webkit-border-radius: 50%;
+    border-radius: 50%;
+    color:#fff;
+}
+.register-row{
+    clear: both;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+}
+
+.register{
+    height: 200px;
+    width: 200px;
+    color: red;
+    font-size: 70px;
+}
+
+.register p{
+    color: #737275;
+    font-size: 20px;
+}
+
+.operate-row{
+    clear: both;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    padding-top: 20px;
+}
+.operate-item{
+    width: 58px;
+    height: 58px;
+}
+
+.operate-item span{
+    font-size: 33px;
+}
+

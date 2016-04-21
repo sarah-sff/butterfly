@@ -11,8 +11,10 @@ public class DeviceOperator {
 //        byte[] bytes = new byte[]{4, 4, 0, 0, 0, 3, -80, 94};
 
         byte[] bytes = new byte[]{4,2, 0, 0, 0, 7};
+        byte[] bytes2 = new byte[]{4,4, 0, 0, 0, 3};
 
         CoilObserver.send(CRC16.addCRCChecker(bytes));
+        RegisterObserver.send(CRC16.addCRCChecker(bytes2));
     }
 
 
