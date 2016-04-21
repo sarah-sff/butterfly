@@ -1,0 +1,1 @@
+var butterflyApp = angular.module('butterflyApp', []);
