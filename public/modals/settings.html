@@ -16,15 +16,19 @@
                         <td ng-bind="$index + 1"></td>
                         <td ng-bind="settingItem.name"></td>
                         <td ng-if="settingItem.type === 1">
-                            <a href="#" editable-text="settingValues[settingItem.key]">
+                            <a href="#" editable-text="settingValues[settingItem.key]"
+                               onaftersave="updateSetting(settingItem.key)">
                                 {{ settingValues[settingItem.key] || 'empty' }}</a>
                         </td>
                         <td ng-if="settingItem.type === 2">
-                            <a href="#" editable-number="settingValues[settingItem.key]" e-min="settingItem.min">
+                            <a href="#" editable-number="settingValues[settingItem.key]"
+                               onaftersave="updateSetting(settingItem.key)"
+                               e-min="settingItem.min" e-max="settingItem.max">
                                 {{ settingValues[settingItem.key] || 'empty' }}</a>
                         </td>
                         <td ng-if="settingItem.type === 3">
-                            <a href="#" editable-select="settingValues[settingItem.key]" onaftersave="updateSetting()"
+                            <a href="#" editable-select="settingValues[settingItem.key]"
+                               onaftersave="updateSetting(settingItem.key)"
                                e-ng-options="s.value as s.text for s in settingItem.options">
                                 {{ showStatus( settingValues[settingItem.key], settingItem.options) }}
                             </a>

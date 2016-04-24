@@ -20,7 +20,9 @@ butterflyApp.controller('displayCenterCtrl', function ($scope, $modal, $filter) 
         }, {"value": "2", "label": ' 固定2号泵'}];
 
 
-    $scope.updateSetting = function () {
+    $scope.updateSetting = function (key) {
+        // todo save
+        console.log(key, $scope.settingValues[key]);
     };
 
     $scope.showStatus = function (destValue, options) {
@@ -207,17 +209,23 @@ butterflyApp.controller('displayCenterCtrl', function ($scope, $modal, $filter) 
             index: 20,
             name: "电压校准",
             key: "pressCheck",
-            type: 2
+            type: 2,
+            min: 0,
+            max: 9999
         }, {
             index: 21,
             name: "电流1校准",
             key: "powerOneCheck",
-            type: 2
+            type: 2,
+            min: 0,
+            max: 999999
         }, {
             index: 22,
             name: "电流2校准",
             key: "powerTwoCheck",
-            type: 2
+            type: 2,
+            min: 0,
+            max: 999999
         }, {
             index: 23,
             name: "LED亮度调整",
