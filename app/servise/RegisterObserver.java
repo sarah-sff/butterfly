@@ -20,6 +20,11 @@ public class RegisterObserver  extends SerialObserver {
 
         String a="";
 
+        System.out.println("");
+        for(byte b:bytes){
+            System.out.print(b+",");
+        }
+        System.out.println("");
 
         int dataIndex=4;
         while (dataIndex<9){

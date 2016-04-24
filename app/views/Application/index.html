@@ -1,39 +1,53 @@
 #{extends 'main.html' /}
 <div ng-controller="displayCenterCtrl">
     <div class="device-item col-lg-6 col-md-6">
-        <div  class="light-row">
-            <div class="col-lg-1 light-item"  ng-repeat="item in led"> <button type="button " class="btn light"  ng-class="{'light-off':!item.light,'light-on':item.light}">{{item.name}}</button></div>
+        <div class="light-row">
+            <div class="col-lg-1 light-item" ng-repeat="item in led">
+                <button type="button " class="btn light" ng-class="{'light-off':!item.light,'light-on':item.light}">
+                    {{item.name}}
+                </button>
+            </div>
         </div>
         <div class="register-row">
-            <div class="col-md-4" ng-repeat="val in vals"><button class="btn register">{{val.value}}<p>电压</p></button></div>
+            <div class="col-md-4" ng-repeat="val in vals">
+                <button class="btn register">{{val.value}}<p>电压</p></button>
+            </div>
         </div>
         <div class="operate-row">
             <div class="col-md-2">
-                <button type="button" class="btn btn-warning operate-item"><span class="glyphicon glyphicon-hand-up"></span> </button>
+                <button type="button" class="btn btn-warning operate-item"><span
+                        class="glyphicon glyphicon-hand-up"></span></button>
                 <p>手动/自动</p>
             </div>
             <div class="col-md-2">
-                <button type="button" class="btn btn-primary operate-item"><span class="glyphicon glyphicon-user"></span></button>
+                <button type="button" class="btn btn-primary operate-item"><span
+                        class="glyphicon glyphicon-user"></span></button>
                 <p>巡检</p>
             </div>
             <div class="col-md-2">
-                <button type="button" class="btn btn-danger operate-item"><span class="glyphicon glyphicon-off"></span></button>
+                <button type="button" class="btn btn-danger operate-item"><span class="glyphicon glyphicon-off"></span>
+                </button>
                 <p>一泵启运/停止</p>
             </div>
             <div class="col-md-2">
-                <button type="button" class="btn btn-danger operate-item"><span class="glyphicon glyphicon-off"></span></button>
+                <button type="button" class="btn btn-danger operate-item"><span class="glyphicon glyphicon-off"></span>
+                </button>
                 <p>二泵启运/停止</p>
             </div>
             <div class="col-md-2">
-                <button type="button" class="btn btn-success operate-item"><span class="glyphicon glyphicon-cog"></span></button>
+                <button type="button" class="btn btn-success operate-item" ng-click="showModal()"><span
+                        class="glyphicon glyphicon-cog"></span></button>
                 <p>设置</p>
             </div>
             <div class="col-md-2">
-                <button type="button" class="btn btn-info operate-item"><span class="glyphicon glyphicon-floppy-disk"></span></button>
+                <button type="button" class="btn btn-info operate-item"><span
+                        class="glyphicon glyphicon-floppy-disk"></span></button>
                 <p>保存/复位</p>
             </div>
         </div>
     </div>
+
+
 </div>
 
 

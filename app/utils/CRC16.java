@@ -68,40 +68,22 @@ public final class CRC16 {
         int Low = 0xFF; // 低字节
         if (data != null) {
             for (byte b : data) {
-                int Index = Low ^ b;
+                byte i = (byte)( Low ^ b);
+
+                int Index=i;
+                if(i<0){
+                    Index+=256;
+                }
                 Low = High ^ CRC16TABLE_HI[Index];
                 High = CRC16TABLE_LO[Index];
             }
         	
         }
-//        return (short) (~((High << 8) + Low)); // 取反
         
         return (short) ((High << 8) | Low); 
     }
 
-    /**
-     * 检查给定长度数据的16位CRC是否正确
-     * 
-     * @param data
-     *            要校验的字节数组
-     * @return true：正确 false：错误
-     * 
-     *         <reamrks> 字节数组最后2个字节为校验码，且低字节在前面，高字节在后面 </reamrks>
-     */
-    public static boolean IsCrc16Good(byte[] data) {
-        // 初始化
-        int High = 0xFF;
-        int Low = 0xFF;
-        if (data != null) {
-            for (byte b : data) {
-                int Index = Low ^ b;
-                Low = High ^ CRC16TABLE_LO[Index];
-                High = CRC16TABLE_HI[Index];
-            }
-        }
 
-        return (High == 0xF0 && Low == 0xB8);
-    }
 
     /**
      * CRC16查找表高字节

@@ -1,0 +1,42 @@
+<div class="modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header" ng-show="title">
+                <button type="button" class="close" aria-label="Close" ng-click="$hide()"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" ng-bind="title"></h4>
+            </div>
+
+            <div class="modal-body" style="height: 300px;overflow-y:scroll">
+
+
+                <table class="table table-striped">
+                    <tbody>
+                    <tr ng-repeat="settingItem in settingMetas track by $index">
+                        <td ng-bind="$index + 1"></td>
+                        <td ng-bind="settingItem.name"></td>
+                        <td ng-if="settingItem.type === 1">
+                            <a href="#" editable-text="settingValues[settingItem.key]">
+                                {{ settingValues[settingItem.key] || 'empty' }}</a>
+                        </td>
+                        <td ng-if="settingItem.type === 2">
+                            <a href="#" editable-number="settingValues[settingItem.key]" e-min="settingItem.min">
+                                {{ settingValues[settingItem.key] || 'empty' }}</a>
+                        </td>
+                        <td ng-if="settingItem.type === 3">
+                            <a href="#" editable-select="settingValues[settingItem.key]" onaftersave="updateSetting()"
+                               e-ng-options="s.value as s.text for s in settingItem.options">
+                                {{ showStatus( settingValues[settingItem.key], settingItem.options) }}
+                            </a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" ng-click="$hide()">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

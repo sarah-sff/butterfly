@@ -1,27 +1,35 @@
 <!DOCTYPE html>
 
 <html ng-app="butterflyApp">
-    <head>
-        <title>#{get 'title' /}</title>
-        <meta charset="${_response_encoding}">
-        <link rel="stylesheet" media="screen" href="@{'/public/stylesheets/main.css'}">
-        #{get 'moreStyles' /}
-        <link rel="shortcut icon" type="image/png" href="@{'/public/images/favicon.png'}">
-        <script src="@{'/public/javascripts/jQuery-2.1.4.min.js'}" type="text/javascript" charset="${_response_encoding}"></script>
+<head>
+    <title>#{get 'title' /}</title>
+    <meta charset="${_response_encoding}">
+    <link rel="stylesheet" media="screen" href="@{'/public/stylesheets/main.css'}">
+    <link rel="stylesheet" media="screen" href="@{'/public/xeditable/xeditable.css'}">
+#{get 'moreStyles' /}
+    <link rel="shortcut icon" type="image/png" href="@{'/public/images/favicon.png'}">
+    <script src="@{'/public/javascripts/jQuery-2.1.4.min.js'}" type="text/javascript"
+            charset="${_response_encoding}"></script>
 
-        <script src="@{'/public/angular/angular.min.js'}" type="text/javascript"></script>
+    <script src="@{'/public/angular/angular.min.js'}" type="text/javascript"></script>
 
-        <link rel="stylesheet" media="screen" href="@{'/public/bootstrap/css/bootstrap.min.css'}">
-        <script src="@{'/public/bootstrap/js/bootstrap.min.js'}" type="text/javascript"></script>
+    <link rel="stylesheet" media="screen" href="@{'/public/stylesheets/docs.min.css'}">
+    <script src="@{'/public/angular-strap/angular-strap.min.js'}" type="text/javascript"></script>
+    <script src="@{'/public/angular-strap/angular-strap.tpl.min.js'}" type="text/javascript"></script>
 
-        <link rel="stylesheet" media="screen" href="@{'/public/butterfly/css/butterfly.css'}">
+    <link rel="stylesheet" media="screen" href="@{'/public/bootstrap/css/bootstrap.min.css'}">
+    <script src="@{'/public/bootstrap/js/bootstrap.min.js'}" type="text/javascript"></script>
 
-        <script src="@{'/public/butterfly/js/app.js'}" type="text/javascript"></script>
-        <script src="@{'/public/butterfly/js/display_center.js'}" type="text/javascript"></script>
+    <link rel="stylesheet" media="screen" href="@{'/public/butterfly/css/butterfly.css'}">
 
-        #{get 'moreScripts' /}
-    </head>
-    <body>
-        #{doLayout /}
-    </body>
+    <script src="@{'/public/butterfly/js/app.js'}" type="text/javascript"></script>
+    <script src="@{'/public/butterfly/js/display_center.js'}" type="text/javascript"></script>
+
+    <script src="@{'/public/xeditable/xeditable.js'}" type="text/javascript"></script>
+
+#{get 'moreScripts' /}
+</head>
+<body>
+#{doLayout /}
+</body>
 </html>
