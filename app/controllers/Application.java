@@ -1,13 +1,15 @@
 package controllers;
 
 import play.mvc.Controller;
-import servise.DeviceOperator;
+import servise.CoilObserver;
 
 public class Application extends Controller {
-    private static int  R=1;
+    private static int R = 1;
 
     public static void index() {
-        DeviceOperator.getStatus();
+
+        CoilObserver.send();
+//        DeviceOperator.getStatus();
 //        OperationObserver.getSettings();
         render();
     }

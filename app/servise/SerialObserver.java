@@ -10,20 +10,11 @@ import java.util.Observer;
 /**
  * Created by Administrator on 2016/4/21.
  */
-public abstract class SerialObserver implements Observer{
+public abstract class SerialObserver implements Observer {
 
-
-    SerialReader sr = new SerialReader();
+    static SerialReader sr = new SerialReader();
 
     public abstract void update(Observable o, Object arg);
-//    /**
-//     * 往串口发送数据,实现双向通讯.
-//     */
-//    public static SerialObserver send(byte[] message) {
-//        SerialObserver test = new SerialObserver();
-//        test.openSerialPort(message);
-//        return test;
-//    }
 
     /**
      * 打开串口

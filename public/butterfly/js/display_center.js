@@ -12,14 +12,6 @@ butterflyApp.controller('displayCenterCtrl', function ($scope, $modal, $filter) 
         return input;
     };
 
-    $scope.selectedChangePump = '0';
-    $scope.changePump = [
-        {"value": "0", "label": '有换泵功能'}, {
-            "value": "1",
-            "label": ' 固定1号泵'
-        }, {"value": "2", "label": ' 固定2号泵'}];
-
-
     $scope.updateSetting = function (key) {
         // todo save
         console.log(key, $scope.settingValues[key]);
@@ -44,8 +36,6 @@ butterflyApp.controller('displayCenterCtrl', function ($scope, $modal, $filter) 
     // 设置功能的设计：由一个list组成，包含index，name，key, type（类型），disable，[以及值范围的options组成]
     // 类型分为：1，text；2，number（min, max）；3，单选（options）
     // options的组成包含text，value
-
-
     $scope.getNumberRanges = function (start, end, gap) {
         var rangeValues = $scope.range(start, end, gap);
         var rangeOptions = [];
