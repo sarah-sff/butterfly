@@ -43,7 +43,8 @@ public class CoilObserver extends SerialObserver implements Observer {
 
     public static SerialObserver send() {
         System.out.println("CoilObserver send...");
-        return send(CRC16.addCRCChecker(new byte[]{4, 3, 0, 0, 0, 32}));
+        return send(CRC16.addCRCChecker(new byte[]{4, 2, 0, 0, 0, 7}));
+//        return send(CRC16.addCRCChecker(new byte[]{4, 3, 0, 0, 0, 32}));
     }
 
 }
