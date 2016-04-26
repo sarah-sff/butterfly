@@ -17,9 +17,15 @@ public class RegisterObserver extends SerialObserver {
         byte[] bytes = (byte[]) arg;
         System.out.println(" RegisterObserver updating ...... ");
 
-        Integer totalDb = Integer.valueOf(bytes[2]);
+        if (bytes[1] != 4) {
+            return;
+        }
 
         String a = "";
+
+        for (int i = 0; i < bytes.length; i++) {
+            System.out.printf(" " + bytes[i]);
+        }
 
         int dataIndex = 4;
         while (dataIndex < 9) {
@@ -30,7 +36,6 @@ public class RegisterObserver extends SerialObserver {
             }
             dataIndex = dataIndex + 2;
         }
-
 
         if (WebSocketUtil.isConnected()) {
             //String val = new StringBuilder(Integer.toBinaryString(value)).reverse().toString();

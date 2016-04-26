@@ -43,6 +43,7 @@ public class SerialReader extends Observable implements Runnable, SerialPortEven
     public void open(HashMap params) {
         serialParams = params;
         if (isOpen) {
+            System.out.println("端口已经打开啦");
 //            close();
             // 重复利用端口，陈玩杰  todo 验证可靠性
             serialParams.clear();
@@ -51,6 +52,7 @@ public class SerialReader extends Observable implements Runnable, SerialPortEven
             return;
         }
         try {
+            System.out.println("马上打开端口！！！");
             // 参数初始化
             int timeout = Integer.parseInt(serialParams.get(PARAMS_TIMEOUT).toString());
             int rate = Integer.parseInt(serialParams.get(PARAMS_RATE).toString());
@@ -146,6 +148,7 @@ public class SerialReader extends Observable implements Runnable, SerialPortEven
     public void close() {
         if (isOpen) {
             try {
+                System.out.println("串口即将关闭！");
                 serialPort.notifyOnDataAvailable(false);
                 serialPort.removeEventListener();
                 inputStream.close();
@@ -164,6 +167,14 @@ public class SerialReader extends Observable implements Runnable, SerialPortEven
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+//        case SerialPortEvent.BI:/*Break interrupt,通讯中断*/
+//         	case SerialPortEvent.OE:/*Overrun error，溢位错误*/
+//         	case SerialPortEvent.FE:/*Framing error，传帧错误*/
+//         	case SerialPortEvent.PE:/*Parity error，校验错误*/
+//         	case SerialPortEvent.CD:/*Carrier detect，载波检测*/
+//         	case SerialPortEvent.CTS:/*Clear to send，清除发送*/
+//         	case SerialPortEvent.DSR:/*Data set ready，数据设备就绪*/
+//         	case SerialPortEvent.RI:/*Ring indicator，响铃指示*/
         switch (event.getEventType()) {
             case SerialPortEvent.BI: // 10
             case SerialPortEvent.OE: // 7
@@ -202,7 +213,29 @@ public class SerialReader extends Observable implements Runnable, SerialPortEven
         setChanged();
         byte[] temp = new byte[length];
         System.arraycopy(message, 0, temp, 0, length);
-        notifyObservers(temp);
+
+
+        byte[] msg;
+
+        int index = 0;
+        int len = 0;
+        // 1位编号+1位功能码+1位长度N+[N个字节数据]+2位CRC:5+N
+        while (index < length) {
+
+            // 判定机器地址
+            if (temp[index] == 4) {
+                len = temp[index + 2] + 5;
+                msg = new byte[len];
+                System.arraycopy(temp, index, msg, 0, len);
+
+                index = len;
+
+                notifyObservers(msg);
+            } else {
+                index++;
+            }
+
+        }
     }
 
     static String getPortTypeName(int portType) {

@@ -1,7 +1,7 @@
 /**
  * Created by Administrator on 2016/4/20.
  */
-butterflyApp.controller('displayCenterCtrl', function ($scope, $modal, $filter) {
+butterflyApp.controller('displayCenterCtrl', function ($scope, $modal, $http) {
 
     $scope.range = function (min, max, step) {
         step = step || 1;
@@ -51,13 +51,13 @@ butterflyApp.controller('displayCenterCtrl', function ($scope, $modal, $filter) 
         {index: 1, name: "密码", key: "password", type: 1, options: []}, {
             index: 2,
             name: "RS485地址",
-            key: "rs485",
+            key: "rs485address",
             type: 3,
             options: $scope.getNumberRanges(1, 31, 1)
         }, {
             index: 2,
             name: "换泵选择",
-            key: "bumpSwitch",
+            key: "choosePump",
             type: 3,
             options: [{value: 0, text: '有换泵功能'},
                 {value: 1, text: '固定1号泵'},
@@ -66,18 +66,18 @@ butterflyApp.controller('displayCenterCtrl', function ($scope, $modal, $filter) 
             index: 3,
             disable: 1,
             name: "保留",
-            key: "1",
+            key: "reserved1",
             type: 1
         }, {
             index: 4,
             disable: 1,
             name: "保留",
-            key: "1",
+            key: "reserved2",
             type: 1
         }, {
             index: 5,
             name: "屏蔽启动时间",
-            key: "startupTime",
+            key: "restartTime",
             type: 3,
             options: [{value: 2, text: '2秒'},
                 {value: 3, text: '3秒'},
@@ -87,14 +87,14 @@ butterflyApp.controller('displayCenterCtrl', function ($scope, $modal, $filter) 
         }, {
             index: 6,
             name: "保护选择",
-            key: "protectSwitch",
+            key: "protectMode",
             type: 3,
             options: [{value: 0, text: '定时限打开'},
                 {value: 1, text: '反时限打开'}]
         }, {
             index: 7,
             name: "电机功率选择",
-            key: "powerSwitch",
+            key: "motorPower",
             type: 3,
             options: [{value: 0, text: '0.55kw'},
                 {value: 1, text: '0.75kw'},
@@ -108,7 +108,7 @@ butterflyApp.controller('displayCenterCtrl', function ($scope, $modal, $filter) 
         }, {
             index: 8,
             name: "过流保护值",
-            key: "overPowerProtectValue",
+            key: "overcurrentProtectVal",
             type: 3,
             options: [{value: 0, text: '关闭过流保护功能'},
                 {value: 1, text: '过流120%'},
@@ -117,14 +117,14 @@ butterflyApp.controller('displayCenterCtrl', function ($scope, $modal, $filter) 
         }, {
             index: 9,
             name: "过流保护延时",
-            key: "overPowerProtectDelay",
+            key: "overcurrentProtectTime",
             type: 2,
             min: 5,
             max: 120
         }, {
             index: 10,
             name: "欠流保护值",
-            key: "lackPowerProtectValue",
+            key: "undercurrentProtectVal",
             type: 3,
             options: [{value: 0, text: '关闭欠流保护功能'},
                 {value: 1, text: '欠流50%'},
@@ -133,21 +133,21 @@ butterflyApp.controller('displayCenterCtrl', function ($scope, $modal, $filter) 
         }, {
             index: 11,
             name: "欠流保护延时",
-            key: "lackPowerProtectDelay",
+            key: "undercurrentProtectTime",
             type: 2,
             min: 5,
             max: 120
         }, {
             index: 12,
             name: "电压选择",
-            key: "pressSwitch",
+            key: "voltage",
             type: 3,
             options: [{value: 0, text: '220v'},
                 {value: 1, text: '380v'}]
         }, {
             index: 13,
             name: "过压保护值",
-            key: "overPressProtectValue",
+            key: "overcoltageProtectVal",
             type: 3,
             options: [{value: 220, text: '220-260v'},
                 {value: 380, text: '380-450v'},
@@ -155,14 +155,14 @@ butterflyApp.controller('displayCenterCtrl', function ($scope, $modal, $filter) 
         }, {
             index: 14,
             name: "过压保护延时",
-            key: "overPressProtectDelay",
+            key: "overcoltageProtectTime",
             type: 2,
             min: 5,
             max: 120
         }, {
             index: 15,
             name: "欠压保护值",
-            key: "lackPressProtectValue",
+            key: "undervoltageProtectVal",
             type: 3,
             options: [{value: 220, text: '180-220v'},
                 {value: 380, text: '310-380v'},
@@ -170,49 +170,49 @@ butterflyApp.controller('displayCenterCtrl', function ($scope, $modal, $filter) 
         }, {
             index: 16,
             name: "欠压保护延时",
-            key: "lackPressProtectDelay",
+            key: "undervoltageProtectTime",
             type: 2,
             min: 5,
             max: 120
         }, {
             index: 17,
             name: "巡检周期(天)",
-            key: "checkPeriod",
+            key: "inspectPeriod",
             type: 2,
             min: 6,
             max: 45
         }, {
             index: 18,
             name: "巡检时间(秒)",
-            key: "checkTime",
+            key: "inspectTime",
             type: 2,
             min: 3,
             max: 120
         }, {
             index: 19,
             name: "切换时间(秒)",
-            key: "switchTime",
+            key: "switchDelay",
             type: 2,
             min: 3,
             max: 10
         }, {
             index: 20,
             name: "电压校准",
-            key: "pressCheck",
+            key: "voltageCalibration",
             type: 2,
             min: 0,
             max: 9999
         }, {
             index: 21,
             name: "电流1校准",
-            key: "powerOneCheck",
+            key: "current1Calibration",
             type: 2,
             min: 0,
             max: 999999
         }, {
             index: 22,
             name: "电流2校准",
-            key: "powerTwoCheck",
+            key: "current2Calibration",
             type: 2,
             min: 0,
             max: 999999
@@ -225,7 +225,7 @@ butterflyApp.controller('displayCenterCtrl', function ($scope, $modal, $filter) 
         }, {
             index: 24,
             name: "电流校准方式",
-            key: "ledLightChange",
+            key: "currentBalibrationMode",
             type: 3,
             options: [{value: 0, text: '线性校准'},
                 {value: 1, text: '查表校准'}]
@@ -248,8 +248,21 @@ butterflyApp.controller('displayCenterCtrl', function ($scope, $modal, $filter) 
     });
     // Show when some event occurs (use $promise property to ensure the template has been loaded)
     $scope.showModal = function () {
+        getSettings();
         myOtherModal.$promise.then(myOtherModal.show);
     };
+
+    var getSettings = function (){
+        $http({
+            url:'/getSettings',
+            method:'GET'
+        }).success(function(data,header,config,status){
+
+        }).error(function(data,header,config,status){
+        });
+
+    }
+
 
     $scope.led = [];
     $scope.vals = [];
@@ -341,7 +354,12 @@ butterflyApp.controller('displayCenterCtrl', function ($scope, $modal, $filter) 
                     }
 
                 }
-            }
+            } else if (str.indexOf('S_') >= 0) {
+                str = str.substr(2);
+                var dataJson=JSON.parse(str);
+                console.log(dataJson);
+
+                $scope.settingValues = dataJson }
 
 
             $scope.$apply();

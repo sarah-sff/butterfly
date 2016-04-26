@@ -18,8 +18,18 @@ public class CoilObserver extends SerialObserver implements Observer {
 
         System.out.println(" CoilObserver updating ...... ");
 
+
         byte[] bytes = (byte[]) arg;
+        for (int i = 0; i < bytes.length; i++) {
+            System.out.printf(" " + bytes[i]);
+        }
+
+        if (bytes[1] != 2) {
+            return;
+        }
+
         Integer value = Integer.valueOf(bytes[3]);
+
 
         if (WebSocketUtil.isConnected()) {
             String val = new StringBuilder(Integer.toBinaryString(value)).reverse().toString();

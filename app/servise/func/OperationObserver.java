@@ -1,8 +1,10 @@
 package servise.func;
 
+import dto.Settings;
 import servise.RegisterObserver;
 import servise.SerialObserver;
 import utils.CRC16;
+import utils.WebSocketUtil;
 
 import java.util.Observable;
 
@@ -22,6 +24,12 @@ public class OperationObserver extends SerialObserver {
             System.out.print(b + ",");
         }
         System.out.println("");
+
+        if (WebSocketUtil.isConnected()) {
+            WebSocketUtil.send("S_" + new Settings(bytes).toString());
+        }
+
+
     }
 
     /**
@@ -79,6 +87,6 @@ public class OperationObserver extends SerialObserver {
      */
     public static void getSettings() {
         byte[] instruction = new byte[]{4, 3, 0, 0, 0, 32};
-        RegisterObserver.send(CRC16.addCRCChecker(instruction));
+        OperationObserver.send(CRC16.addCRCChecker(instruction));
     }
 }
