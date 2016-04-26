@@ -17,13 +17,15 @@ public class OperationObserver extends SerialObserver {
     @Override
     public void update(Observable o, Object arg) {
         byte[] bytes = (byte[]) arg;
-        System.out.println("RegisterObserver--------------------------");
+        System.out.println(" RegisterObserver updating ... ");
 
-        System.out.println("");
-        for (byte b : bytes) {
-            System.out.print(b + ",");
+        if (bytes[1] != 3) {
+            return;
         }
-        System.out.println("");
+
+        for (byte b : bytes) {
+            System.out.print(b + " ");
+        }
 
         if (WebSocketUtil.isConnected()) {
             WebSocketUtil.send("S_" + new Settings(bytes).toString());
