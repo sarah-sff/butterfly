@@ -1,20 +1,26 @@
 package servise;
 
 import gnu.io.SerialPort;
+import utils.CRC16;
 import utils.SerialReader;
 
 import java.util.HashMap;
-import java.util.Observable;
-import java.util.Observer;
 
 /**
  * Created by Administrator on 2016/4/21.
  */
-public abstract class SerialObserver implements Observer {
+public  class SerialService {
 
     static SerialReader sr = new SerialReader();
 
-    public abstract void update(Observable o, Object arg);
+
+    /**
+     * 往串口发送数据,实现双向通讯.
+     */
+    public static void send(byte[] message) {
+        SerialService observer = new SerialService();
+        observer.openSerialPort(CRC16.addCRCChecker(message));
+    }
 
     /**
      * 打开串口
@@ -36,7 +42,6 @@ public abstract class SerialObserver implements Observer {
         params.put(SerialReader.PARAMS_DELAY, 100); // 端口数据准备时间 1秒
         try {
             sr.open(params);
-            sr.addObserver(this);
 
             if (message != null && message.length != 0) {
                 sr.start();
