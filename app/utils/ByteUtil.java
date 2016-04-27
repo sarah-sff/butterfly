@@ -5,6 +5,23 @@ package utils;
  */
 public class ByteUtil {
 
+
+    /**
+     * 有符号转无符号
+     * @param b
+     * @return
+     */
+    public static int getUnsignedByte(byte b){
+
+        int r = b;
+        if(r<0){
+            r+=256;
+        }
+
+        return r;
+
+    }
+
     /**
      * 将两个字节的byte转成int类型
      *
@@ -14,8 +31,7 @@ public class ByteUtil {
      */
     public static int getIntWith2Byte(byte high, byte low) {
 
-
-        return high * 256 + low;
+        return getUnsignedByte(high) * 256 + getUnsignedByte(low);
     }
 
     /**

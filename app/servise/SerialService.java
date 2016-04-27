@@ -1,15 +1,19 @@
 package servise;
 
+import dto.Settings;
 import gnu.io.SerialPort;
+import org.apache.commons.lang.StringUtils;
+import utils.ByteUtil;
 import utils.CRC16;
 import utils.SerialReader;
+import utils.WebSocketUtil;
 
 import java.util.HashMap;
 
 /**
  * Created by Administrator on 2016/4/21.
  */
-public  class SerialService {
+public class SerialService {
 
     static SerialReader sr = new SerialReader();
 
@@ -51,6 +55,97 @@ public  class SerialService {
             e.printStackTrace();
         }
     }
+
+    /**
+     * 发送下一条指令
+     */
+    public static void sendNextInstruction() {
+        System.out.println("继续发送");
+        try {
+            Thread.sleep(100);
+        } catch (Exception e) {
+        }
+        byte[] nextInstruction = (byte[]) InstructionQueen.getInstance().take();
+        SerialService.send(nextInstruction);
+    }
+
+    /**
+     * 解析返回结果
+     *
+     * @param message
+     */
+    public static void doAnalyse(byte[] message) {
+
+        if (message.length < 3) return;
+
+        byte actionCode = message[1];
+
+        String socketStr = "";
+
+        if (actionCode == 2) {
+            socketStr = ledDecode(message);
+        } else if (actionCode == 4) {
+            socketStr = numDecode(message);
+        }else if (actionCode == 3){
+            socketStr = getSettings(message);
+        }
+
+
+        if (WebSocketUtil.isConnected() && !StringUtils.isBlank(socketStr)) {
+            System.out.println("即将向socket发送消息 ----> "+socketStr);
+            WebSocketUtil.send(socketStr);
+        }
+
+
+    }
+
+
+    /**
+     * @param bytes
+     * @return
+     */
+    private static String ledDecode(byte[] bytes) {
+        String binaryStr= Integer.toBinaryString(bytes[3]);
+
+        int len = binaryStr.length();
+
+        int i=0;
+        while (i<7-len){
+            binaryStr = "0" +binaryStr ;
+            i++;
+        }
+
+        return "L_" + binaryStr;
+    }
+
+    /**
+     * 电流电压解析
+     * @return
+     */
+    private static String numDecode(byte[] bytes) {
+
+        String r = "V_";
+        //电压值
+        int voltage = ByteUtil.getIntWith2Byte(bytes[3], bytes[4]);
+        //电流1
+        int current1 = ByteUtil.getIntWith2Byte(bytes[5], bytes[6]);
+        //电流2
+        int current2 = ByteUtil.getIntWith2Byte(bytes[7], bytes[8]);
+
+        return r + voltage + "-" + current1 + "-" + current2;
+    }
+
+
+    /**
+     * 获取设置列表信息
+     * @param bytes
+     * @return
+     */
+    public static String getSettings(byte[] bytes){
+        return "S_"+(new Settings(bytes).toString());
+    }
+
+
 
 }
 

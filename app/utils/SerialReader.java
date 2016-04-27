@@ -1,11 +1,17 @@
 package utils;
 
 import gnu.io.*;
+import servise.SerialService;
 
-import java.io.*;
-import java.util.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.TooManyListenersException;
 
-public class SerialReader extends Observable implements Runnable, SerialPortEventListener {
+public class SerialReader  implements Runnable, SerialPortEventListener {
     static CommPortIdentifier portId;
     int delayRead = 100;
     int numBytes; // buffer中的实际数据字节数
@@ -43,7 +49,6 @@ public class SerialReader extends Observable implements Runnable, SerialPortEven
     public void open(HashMap params) {
         serialParams = params;
         if (isOpen) {
-            System.out.println("端口已经打开啦");
 //            close();
             // 重复利用端口，陈玩杰  todo 验证可靠性
             serialParams.clear();
@@ -52,7 +57,6 @@ public class SerialReader extends Observable implements Runnable, SerialPortEven
             return;
         }
         try {
-            System.out.println("马上打开端口！！！");
             // 参数初始化
             int timeout = Integer.parseInt(serialParams.get(PARAMS_TIMEOUT).toString());
             int rate = Integer.parseInt(serialParams.get(PARAMS_RATE).toString());
@@ -161,20 +165,13 @@ public class SerialReader extends Observable implements Runnable, SerialPortEven
     }
 
     public void serialEvent(SerialPortEvent event) {
-        System.out.println(" 收到数据，开始处理 ...");
+
         try {
             Thread.sleep(delayRead);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-//        case SerialPortEvent.BI:/*Break interrupt,通讯中断*/
-//         	case SerialPortEvent.OE:/*Overrun error，溢位错误*/
-//         	case SerialPortEvent.FE:/*Framing error，传帧错误*/
-//         	case SerialPortEvent.PE:/*Parity error，校验错误*/
-//         	case SerialPortEvent.CD:/*Carrier detect，载波检测*/
-//         	case SerialPortEvent.CTS:/*Clear to send，清除发送*/
-//         	case SerialPortEvent.DSR:/*Data set ready，数据设备就绪*/
-//         	case SerialPortEvent.RI:/*Ring indicator，响铃指示*/
+
         switch (event.getEventType()) {
             case SerialPortEvent.BI: // 10
             case SerialPortEvent.OE: // 7
@@ -188,18 +185,14 @@ public class SerialReader extends Observable implements Runnable, SerialPortEven
                 break;
             case SerialPortEvent.DATA_AVAILABLE: // 1
                 try {
+
                     // 多次读取,将所有数据读入
                     while (inputStream.available() > 0) {
                         numBytes = inputStream.read(readBuffer);
                     }
 
-                    // 打印接收到的字节数据的ASCII码
-//                    for (int i = 0; i < numBytes; i++) {
-//                        System.out.println("msg[" + numBytes + "]: ["
-//                                + readBuffer[i] + "]:" + (char) readBuffer[i]);
-//                    }
-                    System.out.println(new String(readBuffer));
                     changeMessage(readBuffer, numBytes);
+
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -210,32 +203,19 @@ public class SerialReader extends Observable implements Runnable, SerialPortEven
     // 通过observer pattern将收到的数据发送给observer
     // 将buffer中的空字节删除后再发送更新消息,通知观察者
     public void changeMessage(byte[] message, int length) {
-        setChanged();
+
+        for (int i = 0; i < length; i++) {
+            System.out.printf(" " + message[i]);
+        }
+        System.out.println();
+
         byte[] temp = new byte[length];
         System.arraycopy(message, 0, temp, 0, length);
 
+        SerialService.doAnalyse(temp);
 
-        byte[] msg;
+        SerialService.sendNextInstruction();
 
-        int index = 0;
-        int len = 0;
-        // 1位编号+1位功能码+1位长度N+[N个字节数据]+2位CRC:5+N
-        while (index < length) {
-
-            // 判定机器地址
-            if (temp[index] == 4) {
-                len = temp[index + 2] + 5;
-                msg = new byte[len];
-                System.arraycopy(temp, index, msg, 0, len);
-
-                index = len;
-
-                notifyObservers(msg);
-            } else {
-                index++;
-            }
-
-        }
     }
 
     static String getPortTypeName(int portType) {

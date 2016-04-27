@@ -16,21 +16,21 @@
         <div class="operate-row">
             <div class="col-md-2">
                 <button type="button" class="btn btn-warning operate-item"><span
-                        class="glyphicon glyphicon-hand-up"></span></button>
+                        class="glyphicon glyphicon-hand-up" ng-click="modeSwitch()"></span></button>
                 <p>手动/自动</p>
             </div>
             <div class="col-md-2">
-                <button type="button" class="btn btn-primary operate-item"><span
+                <button type="button" class="btn btn-primary operate-item" ng-click="inspect()"><span
                         class="glyphicon glyphicon-user"></span></button>
                 <p>巡检</p>
             </div>
             <div class="col-md-2">
-                <button type="button" class="btn btn-danger operate-item"><span class="glyphicon glyphicon-off"></span>
+                <button type="button" class="btn btn-danger operate-item" ng-click="motor1()"><span class="glyphicon glyphicon-off"></span>
                 </button>
                 <p>一泵启运/停止</p>
             </div>
             <div class="col-md-2">
-                <button type="button" class="btn btn-danger operate-item"><span class="glyphicon glyphicon-off"></span>
+                <button type="button" class="btn btn-danger operate-item" ng-click="motor2()"><span class="glyphicon glyphicon-off"></span>
                 </button>
                 <p>二泵启运/停止</p>
             </div>

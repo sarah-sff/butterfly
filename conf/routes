@@ -5,6 +5,12 @@
 # Home page
 GET     /                                       Application.index
 *       /getSettings                            Application.getSettings
+*       /setMode                                Application.setMode
+*       /inspect                                Application.inspect
+*       /motor1                                Application.motor1
+*       /motor2                                Application.motor2
+
+
 
 # Ignore favicon requests
 GET     /favicon.ico                            404

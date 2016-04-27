@@ -261,6 +261,60 @@ butterflyApp.controller('displayCenterCtrl', function ($scope, $modal, $http) {
         }).error(function(data,header,config,status){
         });
 
+    };
+
+    /**
+     * 手动/自动模式切换
+     */
+    $scope.modeSwitch = function(){
+
+        var autoMode=$scope.led[0].light;
+        var manualMode=$scope.led[1].light;
+
+        var dataJson=$.param({autoMode:autoMode,manualMode:manualMode});
+
+
+        $http({
+            url:'/setMode',
+            method:'POST',
+            headers: {'Content-Type':'application/x-www-form-urlencoded'},
+            data:dataJson
+        }).success(function(data,header,config,status){
+
+        }).error(function(data,header,config,status){
+        });
+    };
+
+
+    $scope.inspect = function(){
+        $http({
+            url:'/inspect',
+            method:'POST',
+        }).success(function(data,header,config,status){
+
+        }).error(function(data,header,config,status){
+        });
+    };
+
+
+    $scope.motor1 = function(){
+        $http({
+            url:'/motor1',
+            method:'POST',
+        }).success(function(data,header,config,status){
+
+        }).error(function(data,header,config,status){
+        });
+    };
+
+    $scope.motor2 = function(){
+        $http({
+            url:'/motor2',
+            method:'POST',
+        }).success(function(data,header,config,status){
+
+        }).error(function(data,header,config,status){
+        });
     }
 
 
@@ -286,13 +340,10 @@ butterflyApp.controller('displayCenterCtrl', function ($scope, $modal, $http) {
         ws.onmessage = function (resp) {
 
             var str = resp.data;
-            console.log(str);
-            console.log(str.indexOf('V'));
 
             if (str.indexOf('V_') >= 0) {
                 $scope.vals = [];
                 str = str.substr(2);
-                console.log(str + "aaa");
                 var dataArrays = str.split("-");
                 console.log(dataArrays);
                 for (var i = 0; i < dataArrays.length && i < 3; i++) {
@@ -300,32 +351,28 @@ butterflyApp.controller('displayCenterCtrl', function ($scope, $modal, $http) {
                 }
             } else if (str.indexOf('L_') >= 0) {
                 str = str.substr(2);
-                while (str && str.length <= 7) {
-                    str += "0";
-                }
-
                 console.log(str);
                 $scope.led = [];
                 var lights = str.split("");
-                for (var index = 0; index < lights.length; index++) {
+                for (var index = lights.length-1; index >=0; index--) {
                     if (index == 0) {
                         var on = false;
                         if ('1' == lights[index]) {
                             on = true;
                         }
-                        $scope.led.push({name: '自动', light: on});
+                        $scope.led.push({name: '巡检', light: on});
                     } else if (index == 1) {
                         var on = false;
                         if ('1' == lights[index]) {
                             on = true;
                         }
-                        $scope.led.push({name: '手动', light: on});
+                        $scope.led.push({name: '巡检', light: on});
                     } else if (index == 2) {
                         var on = false;
                         if ('1' == lights[index]) {
                             on = true;
                         }
-                        $scope.led.push({name: '泵1', light: on});
+                        $scope.led.push({name: '巡检', light: on});
                     } else if (index == 3) {
 
                         var on = false;
@@ -338,19 +385,19 @@ butterflyApp.controller('displayCenterCtrl', function ($scope, $modal, $http) {
                         if ('1' == lights[index]) {
                             on = true;
                         }
-                        $scope.led.push({name: '巡检', light: on});
+                        $scope.led.push({name: '泵1', light: on});
                     } else if (index == 5) {
                         var on = false;
                         if ('1' == lights[index]) {
                             on = true;
                         }
-                        $scope.led.push({name: '巡检', light: on});
+                        $scope.led.push({name: '手动', light: on});
                     } else if (index == 6) {
                         var on = false;
                         if ('1' == lights[index]) {
                             on = true;
                         }
-                        $scope.led.push({name: '巡检', light: on});
+                        $scope.led.push({name: '自动', light: on});
                     }
 
                 }
