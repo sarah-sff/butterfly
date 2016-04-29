@@ -1,17 +1,28 @@
 package servise;
 
+import dto.DeviceData;
+
 import java.util.concurrent.ArrayBlockingQueue;
 
 /**
  * 指令队列
  * urgentQueen：存放紧急指令
- * commonQueen：存放常规指令
+ * pollingQueen: 存放轮询指令
  */
 public class InstructionQueen {
 
-    public  ArrayBlockingQueue urgentQueen = new ArrayBlockingQueue(10);
-    public  ArrayBlockingQueue commonQueen = new ArrayBlockingQueue(2);
+    public ArrayBlockingQueue urgentQueen = new ArrayBlockingQueue(256);
+    public ArrayBlockingQueue pollingQueen = new ArrayBlockingQueue(2);
 
+
+    /**
+     * 队列大小
+     *
+     * @return
+     */
+    public int size() {
+        return urgentQueen.size() + pollingQueen.size();
+    }
 
     /**
      * 增加紧急element
@@ -20,7 +31,7 @@ public class InstructionQueen {
      */
     public void addUrgent(Object element) {
 
-        if (commonQueen.size() < 10) {
+        if (urgentQueen.size() < 256) {
             urgentQueen.add(element);
         }
     }
@@ -33,8 +44,8 @@ public class InstructionQueen {
      */
     public void addCommon(Object element) {
 
-        if (commonQueen.size() < 2) {
-            commonQueen.add(element);
+        if (pollingQueen.size() < 2) {
+            pollingQueen.add(element);
         }
 
     }
@@ -51,8 +62,8 @@ public class InstructionQueen {
     public Object take() {
         try {
             if (urgentQueen.isEmpty()) {
-                Object e = commonQueen.take();
-                commonQueen.add(e);
+                Object e = pollingQueen.take();
+                pollingQueen.add(e);
                 return e;
             } else {
                 Object e = urgentQueen.take();
@@ -64,6 +75,19 @@ public class InstructionQueen {
 
         return null;
 
+    }
+
+
+    /**
+     * 刷新循环指令队列
+     */
+    public void refreshPollingInstruction() {
+        byte[] cycleInstruction1 = new byte[]{DeviceData.selectedDeviceAddr, 2, 0, 0, 0, 7};
+        byte[] cycleInstruction2 = new byte[]{DeviceData.selectedDeviceAddr, 4, 0, 0, 0, 3};
+
+        pollingQueen.clear();
+        pollingQueen.add(cycleInstruction1);
+        pollingQueen.add(cycleInstruction2);
     }
 
 

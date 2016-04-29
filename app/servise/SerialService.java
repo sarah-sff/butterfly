@@ -21,9 +21,12 @@ public class SerialService {
     /**
      * 往串口发送数据,实现双向通讯.
      */
-    public static void send(byte[] message) {
+    private static void send(byte[] message) {
         SerialService observer = new SerialService();
         observer.openSerialPort(CRC16.addCRCChecker(message));
+
+        //记录发送时间
+        Stabler.getInstance().sendMsg(message);
     }
 
     /**
@@ -57,12 +60,26 @@ public class SerialService {
     }
 
     /**
+     * 开始向串口发送短信
+     */
+    public static void sendout(){
+        InstructionQueen.getInstance().refreshPollingInstruction();
+        //开始发送指令
+        SerialService.sendNextInstruction();
+    }
+
+    /**
      * 发送下一条指令
      */
     public static void sendNextInstruction() {
+
+        //指令队列为空，不发送
+        if(InstructionQueen.getInstance().size()<=0){
+            return;
+        }
         System.out.println("继续发送");
         try {
-            Thread.sleep(100);
+            Thread.sleep(2000);
         } catch (Exception e) {
         }
         byte[] nextInstruction = (byte[]) InstructionQueen.getInstance().take();

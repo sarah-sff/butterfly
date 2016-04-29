@@ -2,6 +2,7 @@ package utils;
 
 import gnu.io.*;
 import servise.SerialService;
+import servise.Stabler;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -213,6 +214,8 @@ public class SerialReader  implements Runnable, SerialPortEventListener {
         System.arraycopy(message, 0, temp, 0, length);
 
         SerialService.doAnalyse(temp);
+
+        Stabler.getInstance().recMsg();
 
         SerialService.sendNextInstruction();
 

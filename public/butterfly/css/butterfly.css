@@ -9,6 +9,7 @@ clear: both;
     margin-right: 15px;
     margin-top: 20px;
     margin-bottom: 20px;
+    float: left;
 }
 
 .light-row{
@@ -57,6 +58,8 @@ background: -webkit-linear-gradient(top,  #cb60b3 0%,#ad1283 50%,#de47ac 100%); 
     width: 200px;
     color: red;
     font-size: 70px;
+    float: left;
+    margin-right: 10px;
 }
 
 .register p{
@@ -72,11 +75,26 @@ background: -webkit-linear-gradient(top,  #cb60b3 0%,#ad1283 50%,#de47ac 100%); 
     padding-top: 20px;
 }
 .operate-item{
-    width: 58px;
+    width: 87px;
     height: 58px;
+    margin-right: 10px;
+    float: left;
+    margin-left: 10px;
 }
 
 .operate-item span{
     font-size: 33px;
+}
+
+.device-mask{
+    background-color: rgb(12, 12, 12);
+    position: absolute;
+    top: 94px;
+    right: 10px;
+    left: 10px;
+    bottom: -43px;
+    -webkit-border-radius: 15px;
+    opacity: 0.5;
+    z-index: 1000;
 }
 

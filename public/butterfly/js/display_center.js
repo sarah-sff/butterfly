@@ -3,6 +3,27 @@
  */
 butterflyApp.controller('displayCenterCtrl', function ($scope, $modal, $http) {
 
+
+    //记录当前选择地址的情况下是否有收到socket消息
+    $scope.hasReceiveSocketData = false;
+
+
+    var getAddress = function(){
+        $http({
+            url:'/getAddress',
+            method:'GET',
+            headers: {'Content-Type':'application/x-www-form-urlencoded'},
+        }).success(function(data,header,config,status){
+
+            console.log(data);
+
+            $scope.deviceAddress = data.address;
+        }).error(function(data,header,config,status){
+        });
+    };
+
+    getAddress();
+
     $scope.range = function (min, max, step) {
         step = step || 1;
         var input = [];
@@ -13,6 +34,31 @@ butterflyApp.controller('displayCenterCtrl', function ($scope, $modal, $http) {
     };
 
     $scope.updateSetting = function (key) {
+
+        var index = -1;
+
+        for(var i=0;i<$scope.settingMetas.length;i++){
+            if($scope.settingMetas[i].key == key){
+
+                index = $scope.settingMetas[i].index;
+                console.log($scope.settingMetas[i]);
+                break;
+            }
+        }
+
+        var dataJson=$.param({index:index,key:key,value:$scope.settingValues[key]});
+
+
+        $http({
+            url:'/saveSettings',
+            method:'POST',
+            headers: {'Content-Type':'application/x-www-form-urlencoded'},
+            data:dataJson
+        }).success(function(data,header,config,status){
+
+        }).error(function(data,header,config,status){
+        });
+
         // todo save
         console.log(key, $scope.settingValues[key]);
     };
@@ -48,8 +94,8 @@ butterflyApp.controller('displayCenterCtrl', function ($scope, $modal, $http) {
 
     $scope.settingValues = {password: '123', rs485: 3, bumpSwitch: 1};
     $scope.settingMetas = [
-        {index: 1, name: "密码", key: "password", type: 1, options: []}, {
-            index: 2,
+        {index: 0, name: "密码", key: "password", type: 1, options: []}, {
+            index: 1,
             name: "RS485地址",
             key: "rs485address",
             type: 3,
@@ -108,7 +154,7 @@ butterflyApp.controller('displayCenterCtrl', function ($scope, $modal, $http) {
         }, {
             index: 8,
             name: "过流保护值",
-            key: "overcurrentProtectVal",
+            key: "overCurrentProtectVal",
             type: 3,
             options: [{value: 0, text: '关闭过流保护功能'},
                 {value: 1, text: '过流120%'},
@@ -117,14 +163,14 @@ butterflyApp.controller('displayCenterCtrl', function ($scope, $modal, $http) {
         }, {
             index: 9,
             name: "过流保护延时",
-            key: "overcurrentProtectTime",
+            key: "overCurrentProtectTime",
             type: 2,
             min: 5,
             max: 120
         }, {
             index: 10,
             name: "欠流保护值",
-            key: "undercurrentProtectVal",
+            key: "underCurrentProtectVal",
             type: 3,
             options: [{value: 0, text: '关闭欠流保护功能'},
                 {value: 1, text: '欠流50%'},
@@ -133,7 +179,7 @@ butterflyApp.controller('displayCenterCtrl', function ($scope, $modal, $http) {
         }, {
             index: 11,
             name: "欠流保护延时",
-            key: "undercurrentProtectTime",
+            key: "underCurrentProtectTime",
             type: 2,
             min: 5,
             max: 120
@@ -147,7 +193,7 @@ butterflyApp.controller('displayCenterCtrl', function ($scope, $modal, $http) {
         }, {
             index: 13,
             name: "过压保护值",
-            key: "overcoltageProtectVal",
+            key: "overVoltageProtectVal",
             type: 3,
             options: [{value: 220, text: '220-260v'},
                 {value: 380, text: '380-450v'},
@@ -155,14 +201,14 @@ butterflyApp.controller('displayCenterCtrl', function ($scope, $modal, $http) {
         }, {
             index: 14,
             name: "过压保护延时",
-            key: "overcoltageProtectTime",
+            key: "overVoltageProtectTime",
             type: 2,
             min: 5,
             max: 120
         }, {
             index: 15,
             name: "欠压保护值",
-            key: "undervoltageProtectVal",
+            key: "underVoltageProtectVal",
             type: 3,
             options: [{value: 220, text: '180-220v'},
                 {value: 380, text: '310-380v'},
@@ -170,7 +216,7 @@ butterflyApp.controller('displayCenterCtrl', function ($scope, $modal, $http) {
         }, {
             index: 16,
             name: "欠压保护延时",
-            key: "undervoltageProtectTime",
+            key: "underVoltageProtectTime",
             type: 2,
             min: 5,
             max: 120
@@ -219,13 +265,13 @@ butterflyApp.controller('displayCenterCtrl', function ($scope, $modal, $http) {
         }, {
             index: 23,
             name: "LED亮度调整",
-            key: "ledLightChange",
+            key: "ledBrightness",
             type: 3,
             options: $scope.getNumberRanges(1, 7, 1)
         }, {
             index: 24,
             name: "电流校准方式",
-            key: "currentBalibrationMode",
+            key: "currentCalibrationMode",
             type: 3,
             options: [{value: 0, text: '线性校准'},
                 {value: 1, text: '查表校准'}]
@@ -237,6 +283,24 @@ butterflyApp.controller('displayCenterCtrl', function ($scope, $modal, $http) {
         }
 
     ];
+
+    $scope.deviceAddress = 0;
+    $scope.updateAddress = function(deviceAddress){
+
+        var dataJson=$.param({address:deviceAddress});
+
+        $http({
+            url:'/setAddress',
+            method:'POST',
+            headers: {'Content-Type':'application/x-www-form-urlencoded'},
+            data:dataJson
+        }).success(function(data,header,config,status){
+
+            $scope.hasReceiveSocketData = false ;
+
+        }).error(function(data,header,config,status){
+        });
+    }
 
     // Pre-fetch an external template populated with a custom scope
     var myOtherModal = $modal({
@@ -272,7 +336,6 @@ butterflyApp.controller('displayCenterCtrl', function ($scope, $modal, $http) {
         var manualMode=$scope.led[1].light;
 
         var dataJson=$.param({autoMode:autoMode,manualMode:manualMode});
-
 
         $http({
             url:'/setMode',
@@ -318,8 +381,8 @@ butterflyApp.controller('displayCenterCtrl', function ($scope, $modal, $http) {
     }
 
 
-    $scope.led = [];
-    $scope.vals = [];
+    $scope.led = [{},{},{},{},{},{},{}];
+    $scope.vals = [{},{},{}];
 
     var address = "ws://" + "localhost:9005";
 
@@ -339,19 +402,19 @@ butterflyApp.controller('displayCenterCtrl', function ($scope, $modal, $http) {
          */
         ws.onmessage = function (resp) {
 
+            $scope.hasReceiveSocketData = true ;
+
             var str = resp.data;
 
             if (str.indexOf('V_') >= 0) {
                 $scope.vals = [];
                 str = str.substr(2);
                 var dataArrays = str.split("-");
-                console.log(dataArrays);
                 for (var i = 0; i < dataArrays.length && i < 3; i++) {
                     $scope.vals.push({value: dataArrays[i]});
                 }
             } else if (str.indexOf('L_') >= 0) {
                 str = str.substr(2);
-                console.log(str);
                 $scope.led = [];
                 var lights = str.split("");
                 for (var index = lights.length-1; index >=0; index--) {
@@ -404,13 +467,12 @@ butterflyApp.controller('displayCenterCtrl', function ($scope, $modal, $http) {
             } else if (str.indexOf('S_') >= 0) {
                 str = str.substr(2);
                 var dataJson=JSON.parse(str);
-                console.log(dataJson);
 
+                console.log(dataJson);
                 $scope.settingValues = dataJson }
 
 
             $scope.$apply();
-            console.log($scope.led);
         }
     }
 });
