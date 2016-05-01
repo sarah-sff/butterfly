@@ -10,7 +10,7 @@ public class DeviceData {
     /**
      * 设备地址,表示当前操作设备
      */
-    private static byte selectedDeviceAddr = 0;
+    private static byte selectedDeviceAddr = 1;
 
     /**
      * 读取当前操作设备地址
@@ -21,9 +21,6 @@ public class DeviceData {
 
         if (selectedDeviceAddr < 0) {
             throw new RuntimeException("设备地址错误");
-        }
-        if (selectedDeviceAddr == 0) {
-            throw new RuntimeException("设备地址为设置");
         }
 
         return selectedDeviceAddr;
