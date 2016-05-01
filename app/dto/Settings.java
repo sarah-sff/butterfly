@@ -3,6 +3,7 @@ package dto;
 import utils.ByteUtil;
 
 /**
+ * 配置数据的字段转换.
  * Created by Administrator on 2016/4/26.
  */
 public class Settings {
@@ -92,9 +93,9 @@ public class Settings {
         int dataDb = modbusBytes[2];
 
         //密码
-        this.password = ""+ByteUtil.getIntWith2Byte(modbusBytes[3], modbusBytes[4]);
+        this.password = "" + ByteUtil.getIntWith2Byte(modbusBytes[3], modbusBytes[4]);
 
-
+        // rs485地址
         this.rs485address = ByteUtil.getIntWith2Byte(modbusBytes[5], modbusBytes[6]);
 
         //换泵选择
@@ -104,7 +105,7 @@ public class Settings {
         this.reserved1 = 0;
 
         //保留字段2
-        this.reserved2= 0;
+        this.reserved2 = 0;
 
         //屏蔽启动时间
         this.restartTime = ByteUtil.getIntWith2Byte(modbusBytes[13], modbusBytes[14]);
@@ -189,33 +190,33 @@ public class Settings {
 
 
     public String toString() {
-        return "{\"password\":"+password
-                +",\"rs485address\":"+rs485address
-                +",\"choosePump\":"+choosePump
-                +",\"reserved1\":"+reserved1
-                +",\"reserved2\":"+reserved2
-                +",\"restartTime\":"+restartTime
-                +",\"protectMode\":"+protectMode
-                +",\"motorPower\":"+motorPower
-                +",\"overCurrentProtectVal\":"+overCurrentProtectVal
-                +",\"overCurrentProtectTime\":"+overCurrentProtectTime
-                +",\"underCurrentProtectVal\":"+underCurrentProtectVal
-                +",\"underCurrentProtectTime\":"+underCurrentProtectTime
-                +",\"voltage\":"+voltage
-                +",\"overVoltageProtectVal\":"+overVoltageProtectVal
-                +",\"overVoltageProtectTime\":"+overVoltageProtectTime
-                +",\"underVoltageProtectVal\":"+underVoltageProtectVal
-                +",\"underVoltageProtectTime\":"+underVoltageProtectTime
-                +",\"inspectPeriod\":"+inspectPeriod
-                +",\"inspectTime\":"+inspectTime
-                +",\"switchDelay\":"+switchDelay
-                +",\"voltageCalibration\":"+voltageCalibration
-                +",\"current1Calibration\":"+current1Calibration
-                +",\"current2Calibration\":"+current2Calibration
-                +",\"ledBrightness\":"+ledBrightness
-                +",\"currentCalibrationMode\":"+currentCalibrationMode
-                +",\"version\":"+version
-                +"}";
+        return "{\"password\":" + password
+                + ",\"rs485address\":" + rs485address
+                + ",\"choosePump\":" + choosePump
+                + ",\"reserved1\":" + reserved1
+                + ",\"reserved2\":" + reserved2
+                + ",\"restartTime\":" + restartTime
+                + ",\"protectMode\":" + protectMode
+                + ",\"motorPower\":" + motorPower
+                + ",\"overCurrentProtectVal\":" + overCurrentProtectVal
+                + ",\"overCurrentProtectTime\":" + overCurrentProtectTime
+                + ",\"underCurrentProtectVal\":" + underCurrentProtectVal
+                + ",\"underCurrentProtectTime\":" + underCurrentProtectTime
+                + ",\"voltage\":" + voltage
+                + ",\"overVoltageProtectVal\":" + overVoltageProtectVal
+                + ",\"overVoltageProtectTime\":" + overVoltageProtectTime
+                + ",\"underVoltageProtectVal\":" + underVoltageProtectVal
+                + ",\"underVoltageProtectTime\":" + underVoltageProtectTime
+                + ",\"inspectPeriod\":" + inspectPeriod
+                + ",\"inspectTime\":" + inspectTime
+                + ",\"switchDelay\":" + switchDelay
+                + ",\"voltageCalibration\":" + voltageCalibration
+                + ",\"current1Calibration\":" + current1Calibration
+                + ",\"current2Calibration\":" + current2Calibration
+                + ",\"ledBrightness\":" + ledBrightness
+                + ",\"currentCalibrationMode\":" + currentCalibrationMode
+                + ",\"version\":" + version
+                + "}";
 
     }
 }

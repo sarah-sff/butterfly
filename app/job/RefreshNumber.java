@@ -15,6 +15,5 @@ public class RefreshNumber extends Job {
 
         //串口开始发送消息
         SerialService.sendout();
-
     }
 }

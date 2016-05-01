@@ -1,6 +1,7 @@
 package servise;
 
 import dto.DeviceData;
+import play.Logger;
 
 import java.util.concurrent.ArrayBlockingQueue;
 
@@ -11,9 +12,24 @@ import java.util.concurrent.ArrayBlockingQueue;
  */
 public class InstructionQueen {
 
+    private static final InstructionQueen single = new InstructionQueen();
+
+    /**
+     * 紧急队列,用于设置和配置信息(写操作)
+     */
     public ArrayBlockingQueue urgentQueen = new ArrayBlockingQueue(256);
+    /**
+     * 循环队列,用于读取指示灯和电源/电压
+     */
     public ArrayBlockingQueue pollingQueen = new ArrayBlockingQueue(2);
 
+    //单例
+    private InstructionQueen() {
+    }
+
+    public static InstructionQueen getInstance() {
+        return single;
+    }
 
     /**
      * 队列大小
@@ -33,9 +49,10 @@ public class InstructionQueen {
 
         if (urgentQueen.size() < 256) {
             urgentQueen.add(element);
+        } else {
+            Logger.error("紧急队列元素过多,直接抛弃新指令... %s " + element.toString());
         }
     }
-
 
     /**
      * 增加普通element
@@ -50,7 +67,6 @@ public class InstructionQueen {
 
     }
 
-
     /**
      * 获取元素
      * 如果紧急队列里面有，就拿紧急队列的
@@ -63,6 +79,7 @@ public class InstructionQueen {
         try {
             if (urgentQueen.isEmpty()) {
                 Object e = pollingQueen.take();
+                // 循环放入队列,等待下次执行
                 pollingQueen.add(e);
                 return e;
             } else {
@@ -70,35 +87,23 @@ public class InstructionQueen {
                 return e;
             }
         } catch (InterruptedException e) {
-            System.out.println(e);
+            Logger.error(e.getMessage());
         }
 
         return null;
-
     }
-
 
     /**
      * 刷新循环指令队列
      */
     public void refreshPollingInstruction() {
-        byte[] cycleInstruction1 = new byte[]{DeviceData.selectedDeviceAddr, 2, 0, 0, 0, 7};
-        byte[] cycleInstruction2 = new byte[]{DeviceData.selectedDeviceAddr, 4, 0, 0, 0, 3};
-
         pollingQueen.clear();
+
+        byte[] cycleInstruction1 = new byte[]{DeviceData.getSelectedDeviceAddr(), 2, 0, 0, 0, 7};
+        byte[] cycleInstruction2 = new byte[]{DeviceData.getSelectedDeviceAddr(), 4, 0, 0, 0, 3};
+
         pollingQueen.add(cycleInstruction1);
         pollingQueen.add(cycleInstruction2);
-    }
-
-
-    //单例
-    private InstructionQueen() {
-    }
-
-    private static final InstructionQueen single = new InstructionQueen();
-
-    public static InstructionQueen getInstance() {
-        return single;
     }
 
 }

@@ -1,6 +1,7 @@
 package utils;
 
 import gnu.io.*;
+import play.Logger;
 import servise.SerialService;
 import servise.Stabler;
 
@@ -12,19 +13,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.TooManyListenersException;
 
-public class SerialReader  implements Runnable, SerialPortEventListener {
-    static CommPortIdentifier portId;
-    int delayRead = 100;
-    int numBytes; // buffer中的实际数据字节数
-    private static byte[] readBuffer = new byte[1024]; // 4k的buffer空间,缓存串口读入的数据
-    static Enumeration portList;
-    InputStream inputStream;
-    OutputStream outputStream;
-    static SerialPort serialPort;
-    HashMap serialParams;
-    Thread readThread;// 本来是static类型的
-    // 端口是否打开了
-    boolean isOpen = false;
+public class SerialReader implements Runnable, SerialPortEventListener {
+
     // 端口读入数据事件触发后,等待n毫秒后再读取,以便让数据一次性读完
     public static final String PARAMS_DELAY = "delay read"; // 延时等待端口数据准备的时间
     public static final String PARAMS_TIMEOUT = "timeout"; // 超时时间
@@ -34,9 +24,18 @@ public class SerialReader  implements Runnable, SerialPortEventListener {
     public static final String PARAMS_PARITY = "parity"; // 奇偶校验
     public static final String PARAMS_RATE = "rate"; // 波特率
 
-    public boolean isOpen() {
-        return isOpen;
-    }
+    static CommPortIdentifier portId;
+    static SerialPort serialPort;
+    private static byte[] readBuffer = new byte[1024]; // 4k的buffer空间,缓存串口读入的数据
+    int delayRead = 100;
+    int numBytes; // buffer中的实际数据字节数
+
+    InputStream inputStream;
+    OutputStream outputStream;
+    HashMap serialParams;
+    //    Thread readThread;// 本来是static类型的
+    // 端口是否打开了
+    boolean isOpen = false;
 
     /**
      * 初始化端口操作的参数.
@@ -45,6 +44,27 @@ public class SerialReader  implements Runnable, SerialPortEventListener {
      */
     public SerialReader() {
         isOpen = false;
+    }
+
+    static String getPortTypeName(int portType) {
+        switch (portType) {
+            case CommPortIdentifier.PORT_I2C:
+                return "I2C";
+            case CommPortIdentifier.PORT_PARALLEL:
+                return "Parallel";
+            case CommPortIdentifier.PORT_RAW:
+                return "Raw";
+            case CommPortIdentifier.PORT_RS485:
+                return "RS485";
+            case CommPortIdentifier.PORT_SERIAL:
+                return "Serial";
+            default:
+                return "unknown type";
+        }
+    }
+
+    public boolean isOpen() {
+        return isOpen;
     }
 
     public void open(HashMap params) {
@@ -70,8 +90,8 @@ public class SerialReader  implements Runnable, SerialPortEventListener {
             portId = CommPortIdentifier.getPortIdentifier(port);
 
             if (portId.isCurrentlyOwned()) {
-                System.out.println("Error: Port is currently in use");
-                System.out.println(portId.getCurrentOwner());
+                Logger.info("Error: Port is currently in use");
+                Logger.info(portId.getCurrentOwner());
             } else {
                 serialPort = (SerialPort) portId.open(getPortTypeName(CommPortIdentifier.PORT_SERIAL), timeout);
                 inputStream = serialPort.getInputStream();
@@ -83,20 +103,15 @@ public class SerialReader  implements Runnable, SerialPortEventListener {
             }
         } catch (PortInUseException e) {
             e.printStackTrace();
-            System.out.println("端口" + serialParams.get(PARAMS_PORT).toString() + "已经被占用");
-            // 端口"+serialParams.get( PARAMS_PORT ).toString()+"已经被占用";
+            Logger.info("端口" + serialParams.get(PARAMS_PORT).toString() + "已经被占用");
         } catch (TooManyListenersException e) {
-            System.out.println("端口" + serialParams.get(PARAMS_PORT).toString() + "监听者过多");
-            // "端口"+serialParams.get( PARAMS_PORT ).toString()+"监听者过多";
+            Logger.info("端口" + serialParams.get(PARAMS_PORT).toString() + "监听者过多");
         } catch (UnsupportedCommOperationException e) {
-            System.out.println("端口操作命令不支持");
-            // "端口操作命令不支持";
+            Logger.info("端口操作命令不支持");
         } catch (NoSuchPortException e) {
-            System.out.println("端口" + serialParams.get(PARAMS_PORT).toString() + "不存在");
-            // "端口"+serialParams.get( PARAMS_PORT ).toString()+"不存在";
+            Logger.info("端口" + serialParams.get(PARAMS_PORT).toString() + "不存在");
         } catch (IOException e) {
-            System.out.println("打开端口" + serialParams.get(PARAMS_PORT).toString() + "失败");
-            // "打开端口"+serialParams.get( PARAMS_PORT ).toString()+"失败";
+            Logger.info("打开端口" + serialParams.get(PARAMS_PORT).toString() + "失败");
         }
         serialParams.clear();
         Thread readThread = new Thread(this);
@@ -118,13 +133,8 @@ public class SerialReader  implements Runnable, SerialPortEventListener {
             outputStream = serialPort.getOutputStream();
         } catch (IOException e) {
             e.printStackTrace();
+            Logger.error(e.getMessage());
         }
-//        try {
-//            readThread = new Thread(this);
-//            readThread.start();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
     }
 
     /**
@@ -142,7 +152,7 @@ public class SerialReader  implements Runnable, SerialPortEventListener {
             for (byte b : bytes) {
                 data += Integer.valueOf(b);
             }
-            System.out.println("指令发送中......，数据----->" + data);
+            Logger.info("指令发送中......，数据----->" + data);
             outputStream.write(bytes); // 往串口发送数据，是双向通讯的。
             outputStream.flush();
         } catch (IOException e) {
@@ -153,7 +163,7 @@ public class SerialReader  implements Runnable, SerialPortEventListener {
     public void close() {
         if (isOpen) {
             try {
-                System.out.println("串口即将关闭！");
+                Logger.info("串口即将关闭！");
                 serialPort.notifyOnDataAvailable(false);
                 serialPort.removeEventListener();
                 inputStream.close();
@@ -206,36 +216,18 @@ public class SerialReader  implements Runnable, SerialPortEventListener {
     public void changeMessage(byte[] message, int length) {
 
         for (int i = 0; i < length; i++) {
-            System.out.printf(" " + message[i]);
+            Logger.info(" " + message[i]);
         }
-        System.out.println();
 
         byte[] temp = new byte[length];
         System.arraycopy(message, 0, temp, 0, length);
 
         SerialService.doAnalyse(temp);
 
-        Stabler.getInstance().recMsg();
+        Stabler.getInstance().removeFromInsRecordQueue();
 
         SerialService.sendNextInstruction();
 
-    }
-
-    static String getPortTypeName(int portType) {
-        switch (portType) {
-            case CommPortIdentifier.PORT_I2C:
-                return "I2C";
-            case CommPortIdentifier.PORT_PARALLEL:
-                return "Parallel";
-            case CommPortIdentifier.PORT_RAW:
-                return "Raw";
-            case CommPortIdentifier.PORT_RS485:
-                return "RS485";
-            case CommPortIdentifier.PORT_SERIAL:
-                return "Serial";
-            default:
-                return "unknown type";
-        }
     }
 
     public HashSet<CommPortIdentifier> getAvailableSerialPorts() {
@@ -253,9 +245,9 @@ public class SerialReader  implements Runnable, SerialPortEventListener {
                         thePort.close();
                         h.add(com);
                     } catch (PortInUseException e) {
-                        System.out.println("Port, " + com.getName() + ", is in use.");
+                        Logger.info("Port, " + com.getName() + ", is in use.");
                     } catch (Exception e) {
-                        System.out.println("Failed to open port " + com.getName() + e);
+                        Logger.info("Failed to open port " + com.getName() + e);
                     }
             }
         }

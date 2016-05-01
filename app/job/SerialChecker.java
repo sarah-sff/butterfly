@@ -8,12 +8,11 @@ import servise.Stabler;
  * Created by Administrator on 2016/4/29.
  */
 @Every("1s")
-public class SerialChecking extends Job {
+public class SerialChecker extends Job {
 
     @Override
     public void doJob() throws Exception {
 
         Stabler.getInstance().check();
-
     }
 }
